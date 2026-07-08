@@ -2,849 +2,383 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>淡水钓鱼看饵图鉴</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>钓鱼看饵图鉴 · 淡水鱼百科</title>
+    <meta name="referrer" content="no-referrer">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        :root {
+            --bg: #f9f8f6;
+            --card-bg: #ffffff;
+            --text: #1f1f1f;
+            --text-secondary: #4a4a4a;
+            --text-muted: #7a7a7a;
+            --border: #e0dcd6;
+            --border-light: #eeebe6;
+            --accent: #4a7c5f;
+            --accent-soft: #e6f0ea;
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-hover: 0 3px 14px rgba(0,0,0,0.09);
+            --radius: 10px;
+            --font: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+            --transition: 0.2s;
         }
-
-        html {
-            scroll-behavior: smooth;
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent;}
+        body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;padding-bottom:60px;}
+        .top-bar{position:sticky;top:0;z-index:200;background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+        .top-bar .logo{font-weight:700;font-size:1.05rem;color:var(--accent);display:flex;align-items:center;gap:6px;}
+        .top-bar .logo .dot{width:26px;height:26px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:14px;}
+        .search-box{position:relative;flex:1;min-width:140px;max-width:380px;}
+        .search-box input{width:100%;padding:9px 38px 9px 14px;border:1.5px solid var(--border);border-radius:22px;font-size:0.9rem;background:#fff;outline:none;transition:var(--transition);}
+        .search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,124,95,0.07);}
+        .search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#b0aaa2;font-size:1rem;padding:6px 8px;border-radius:50%;cursor:pointer;display:none;}
+        .search-clear.visible{display:flex;}
+        .result-badge{font-size:0.8rem;color:var(--text-muted);}
+        .view-toggle-row{display:flex;gap:6px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--border-light);position:sticky;top:52px;z-index:150;overflow-x:auto;}
+        .toggle-btn{flex-shrink:0;padding:7px 16px;border-radius:18px;border:1.5px solid var(--border);background:#fff;font-size:0.85rem;font-weight:600;cursor:pointer;color:var(--text-secondary);transition:var(--transition);white-space:nowrap;}
+        .toggle-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+        .popular-row{display:flex;gap:8px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--border-light);overflow-x:auto;position:sticky;top:96px;z-index:140;}
+        .popular-btn{flex-shrink:0;padding:5px 12px;border-radius:16px;border:1.5px solid var(--border);background:#fff;font-size:0.78rem;font-weight:500;cursor:pointer;color:var(--text-secondary);transition:var(--transition);white-space:nowrap;}
+        .popular-btn:hover{background:var(--accent-soft);color:var(--accent);}
+        .sub-nav-scroll{display:flex;gap:5px;padding:8px 14px;overflow-x:auto;background:var(--bg);position:sticky;top:136px;z-index:140;}
+        .sub-nav-scroll a{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;padding:0 8px;border-radius:16px;text-decoration:none;color:var(--text-secondary);font-weight:600;font-size:0.82rem;border:1.5px solid transparent;background:transparent;white-space:nowrap;cursor:pointer;}
+        .sub-nav-scroll a:hover{background:var(--accent-soft);color:var(--accent);}
+        .sub-nav-scroll a.active{background:var(--accent);color:#fff;}
+        .sub-nav-scroll a.empty{color:#d6d2cb;pointer-events:none;opacity:0.45;}
+        .main-container{max-width:1100px;margin:0 auto;padding:16px 12px 40px;}
+        .section-title{font-size:1.35rem;font-weight:700;color:var(--accent);margin:28px 0 12px 4px;padding-bottom:6px;border-bottom:2px solid var(--border-light);scroll-margin-top:160px;}
+        .fish-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+        @media(max-width:720px){
+            .fish-grid{grid-template-columns:1fr;}
+            .top-bar{padding:8px 10px;}
+            .view-toggle-row{top:44px;}
+            .popular-row{top:80px;}
+            .sub-nav-scroll{top:120px;}
+            .section-title{font-size:1.15rem;scroll-margin-top:140px;}
+            .fish-card{padding:14px 16px;}
+            .fish-name{font-size:1.1rem!important;}
         }
+        .fish-card{background:var(--card-bg);border:1px solid var(--border-light);border-radius:var(--radius);padding:16px;transition:var(--transition);box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:10px;}
+        .fish-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px);}
+        .card-top{display:flex;gap:12px;align-items:flex-start;}
+        .fish-img{width:80px;height:80px;object-fit:cover;border-radius:8px;background:#f0ece6;flex-shrink:0;border:1px solid var(--border-light);}
+        .card-info{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0;}
+        .fish-name-row{display:flex;align-items:baseline;gap:8px;}
+        .fish-name{font-size:1.15rem;font-weight:700;}
+        .fish-pinyin{font-size:0.7rem;color:#c8c2b8;text-transform:uppercase;}
+        .info-row{display:flex;flex-wrap:wrap;gap:2px 6px;align-items:flex-start;}
+        .info-label{font-size:0.72rem;font-weight:600;color:var(--text-muted);min-width:38px;padding-top:3px;}
+        .info-tags{display:flex;flex-wrap:wrap;gap:3px;flex:1;}
+        .tag{display:inline-block;font-size:0.74rem;padding:2px 8px;border-radius:10px;white-space:nowrap;cursor:pointer;transition:var(--transition);}
+        .tag-comm{background:#eef2f6;color:#3d5068;}
+        .tag-home{background:#faf3e8;color:#6b4f30;}
+        .tag-home:hover{background:#f0e2cc;}
+        .tag-hab{background:#eaf4ed;color:#3d6048;}
+        .tag-hab:hover{background:#d4e8d8;}
+        .tag-water{background:#f0f4f8;color:#3a5568;font-size:0.7rem;cursor:default;}
+        mark{background:#fef0c2;color:#8b5a00;padding:1px 3px;border-radius:2px;}
+        .no-result{text-align:center;padding:50px 20px;color:var(--text-muted);display:none;}
+        .back-to-top{position:fixed;bottom:24px;right:20px;width:40px;height:40px;border-radius:50%;background:#fff;border:1.5px solid var(--border);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;z-index:180;opacity:0;pointer-events:none;transition:var(--transition);}
+        .back-to-top.visible{opacity:1;pointer-events:auto;}
+        .page-footer{text-align:center;color:#c8c2b8;font-size:0.75rem;padding:30px 16px 10px;}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-            background-color: #f5f6f8;
-            color: #333;
-            line-height: 1.6;
-            font-size: 14px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px 16px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        header h1 {
-            font-size: 24px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 6px;
-        }
-
-        header p {
-            color: #7f8c8d;
-            font-size: 13px;
-        }
-
-        /* 搜索框 */
-        .search-box {
-            max-width: 500px;
-            margin: 0 auto 20px;
-            position: relative;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            background: #fff;
-            -webkit-appearance: none;
-        }
-
-        .search-box input:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        /* 筛选标签栏 */
-        .filter-tabs {
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            gap: 8px;
-            margin-bottom: 20px;
-            padding: 12px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .filter-tabs::-webkit-scrollbar {
-            display: none;
-        }
-
-        .filter-tab {
-            flex-shrink: 0;
-            padding: 6px 14px;
-            border-radius: 20px;
-            background: #f0f2f5;
-            color: #666;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-            border: none;
-        }
-
-        .filter-tab:hover {
-            background: #e8eaed;
-        }
-
-        .filter-tab.active {
-            background-color: #3498db;
-            color: #fff;
-        }
-
-        /* 字母导航 */
-        .alphabet-nav {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 4px;
-            margin-bottom: 20px;
-            padding: 12px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .alphabet-nav a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #555;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .alphabet-nav a:hover,
-        .alphabet-nav a.active {
-            background-color: #3498db;
-            color: #fff;
-        }
-
-        .alphabet-nav a.empty {
-            color: #ccc;
-            pointer-events: none;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin: 24px 0 12px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #3498db;
-            display: inline-block;
-            scroll-margin-top: 10px;
-        }
-
-        /* 鱼种卡片网格 */
-        .fish-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .fish-card {
-            background: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .fish-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .fish-card:active {
-            transform: scale(0.99);
-        }
-
-        .fish-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            background: #f0f2f5;
-            display: block;
-        }
-
-        .fish-image-fallback {
-            width: 100%;
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #e8f4fd 0%, #d4e8f7 100%);
-            font-size: 60px;
-        }
-
-        .fish-body {
-            padding: 16px;
-            flex: 1;
-        }
-
-        .fish-card h3 {
-            font-size: 17px;
-            color: #2c3e50;
-            margin-bottom: 4px;
-        }
-
-        .alias {
-            color: #7f8c8d;
-            font-size: 12px;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #eee;
-            line-height: 1.5;
-        }
-
-        .alias strong {
-            color: #555;
-            font-weight: 500;
-        }
-
-        .water-type {
-            display: inline-block;
-            padding: 2px 8px;
-            background: #e8f4fd;
-            color: #2980b9;
-            border-radius: 4px;
-            font-size: 11px;
-            margin-bottom: 10px;
-        }
-
-        .info-block {
-            margin-bottom: 8px;
-        }
-
-        .info-block:last-child {
-            margin-bottom: 0;
-        }
-
-        .info-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #3498db;
-            margin-bottom: 3px;
-        }
-
-        .info-content {
-            font-size: 13px;
-            color: #555;
-        }
-
-        .info-content ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .info-content li {
-            position: relative;
-            padding-left: 14px;
-            margin-bottom: 2px;
-            line-height: 1.5;
-        }
-
-        .info-content li::before {
-            content: "·";
-            position: absolute;
-            left: 4px;
-            color: #bbb;
-            font-weight: bold;
-        }
-
-        .no-result {
-            text-align: center;
-            padding: 50px 20px;
-            color: #999;
-            font-size: 14px;
-            display: none;
-        }
-
-        .no-result.show {
-            display: block;
-        }
-
-        .result-count {
-            text-align: right;
-            color: #999;
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 16px;
-            border-top: 1px solid #e0e0e0;
-            color: #aaa;
-            font-size: 12px;
-        }
-
-        /* 回到顶部按钮 */
-        .back-top {
-            position: fixed;
-            right: 20px;
-            bottom: 30px;
-            width: 44px;
-            height: 44px;
-            background: #fff;
-            border-radius: 50%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            z-index: 100;
-        }
-
-        .back-top.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* 移动端优化 */
-        @media (max-width: 768px) {
-            .container {
-                padding: 16px 12px;
-            }
-
-            header h1 {
-                font-size: 20px;
-            }
-
-            .fish-grid {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .fish-image, .fish-image-fallback {
-                height: 160px;
-            }
-
-            .fish-body {
-                padding: 14px;
-            }
-
-            .alphabet-nav {
-                gap: 2px;
-                padding: 10px 8px;
-            }
-
-            .alphabet-nav a {
-                width: 24px;
-                height: 24px;
-                font-size: 12px;
-            }
-
-            .back-top {
-                right: 15px;
-                bottom: 20px;
-                width: 40px;
-                height: 40px;
-            }
-        }
+        /* 弹窗 */
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+        .modal-overlay.active{opacity:1;pointer-events:auto;}
+        .modal-box{background:#fff;border-radius:var(--radius);max-width:420px;width:90%;max-height:70vh;overflow-y:auto;padding:20px;box-shadow:0 8px 30px rgba(0,0,0,0.15);position:relative;}
+        .modal-close{position:absolute;top:10px;right:14px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-muted);}
+        .modal-title{font-size:1.1rem;font-weight:700;margin-bottom:12px;color:var(--accent);}
+        .modal-body{font-size:0.9rem;color:var(--text-secondary);line-height:1.6;}
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>淡水钓鱼看饵图鉴</h1>
-            <p>国内常见鱼种 · 饵料配方 · 栖息环境</p>
-        </header>
-
+    <div class="top-bar">
+        <div class="logo"><span class="dot">🎣</span>钓鱼看饵图鉴</div>
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="搜索鱼种、俗名或饵料..." oninput="searchFish()">
+            <input type="text" id="searchInput" placeholder="搜索鱼名、俗名或水域…" autocomplete="off">
+            <button class="search-clear" id="searchClear" aria-label="清除">✕</button>
         </div>
+        <span class="result-badge" id="resultCount">共 <strong>45</strong> 种</span>
+    </div>
+    <div class="view-toggle-row" id="viewToggleRow">
+        <button class="toggle-btn active" data-view="alpha">🔤 按首字母</button>
+        <button class="toggle-btn" data-view="water">🌊 按水域类型</button>
+    </div>
+    <!-- 常见鱼种快捷入口 -->
+    <div class="popular-row" id="popularRow">
+        <span style="font-size:0.75rem;color:var(--text-muted);flex-shrink:0;align-self:center;">🔥热门：</span>
+    </div>
+    <nav class="sub-nav-scroll" id="subNavScroll"></nav>
+    <div class="main-container" id="mainContent"></div>
+    <div class="no-result" id="noResult"><span>🐟</span>没有找到匹配的鱼种，试试其他关键词</div>
+    <button class="back-to-top" id="backToTop">↑</button>
+    <div class="page-footer">数据仅供参考 · 钓无定法，适者为佳 · 共收录45种常见淡水鱼</div>
 
-        <!-- 水域类型筛选标签 -->
-        <div class="filter-tabs" id="filterTabs">
-            <button class="filter-tab active" data-filter="all" onclick="filterByWater('all')">全部水域</button>
-            <button class="filter-tab" data-filter="pond" onclick="filterByWater('pond')">乡村池塘</button>
-            <button class="filter-tab" data-filter="reservoir" onclick="filterByWater('reservoir')">水库湖泊</button>
-            <button class="filter-tab" data-filter="river" onclick="filterByWater('river')">自然江河</button>
-            <button class="filter-tab" data-filter="stream" onclick="filterByWater('stream')">山间溪流</button>
+    <!-- 弹窗 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <button class="modal-close" id="modalClose">✕</button>
+            <div class="modal-title" id="modalTitle"></div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
-
-        <div class="alphabet-nav" id="alphabetNav"></div>
-
-        <div class="result-count" id="resultCount"></div>
-
-        <div id="fishContainer"></div>
-
-        <div class="no-result" id="noResult">未找到匹配的鱼种，请尝试其他关键词</div>
-
-        <footer>
-            图片来源：Wikimedia Commons（CC协议）· 仅供垂钓爱好者参考 · 爱护渔业资源，合理垂钓
-        </footer>
     </div>
 
-    <div class="back-top" id="backTop" onclick="scrollToTop()" title="回到顶部">↑</div>
-
     <script>
-        // 鱼种数据 - 维基共享真实图片
-        const fishData = [
-            {
-                name: "白条鱼",
-                pinyin: "baitiaoyu",
-                alias: "䱗条、游刁子、尖嘴子、白鲦、蓝刀鱼",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Hemiculter_leucisculus.jpg/640px-Hemiculter_leucisculus.jpg",
-                waterType: ["pond", "reservoir", "river", "stream"],
-                waterTypeName: "广布各水域",
-                commercialBait: ["腥香拉饵", "野战蓝鲫", "速攻2号", "浓腥鲫鱼饵"],
-                homemadeBait: ["红虫", "蚯蚓", "蝇蛆", "玉米面+虾粉"],
-                habitat: ["中上层水域", "水流平缓浅滩", "回水湾入水口", "水库近岸水面"]
-            },
-            {
-                name: "鳊鱼",
-                pinyin: "bianyu",
-                alias: "武昌鱼、团头鲂、草鳊、油鳊、方鱼",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Megalobrama_amblycephala.jpg/640px-Megalobrama_amblycephala.jpg",
-                waterType: ["reservoir", "river", "pond"],
-                waterTypeName: "水库湖泊江河",
-                commercialBait: ["草鱼商品饵", "九一八野战篇", "超诱+麸香饵", "鳊鱼颗粒"],
-                homemadeBait: ["嫩玉米粒", "麦粒", "红薯丁", "嫩草叶"],
-                habitat: ["中下层水域", "水草茂盛缓流区", "水库浅滩洄水湾", "湖泊开阔水面"]
-            },
-            {
-                name: "草鱼",
-                pinyin: "caoyu",
-                alias: "鲩鱼、草鲩、白鲩、草根、混子",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Ctenopharyngodon_idella.jpg/640px-Ctenopharyngodon_idella.jpg",
-                waterType: ["pond", "reservoir", "river"],
-                waterTypeName: "池塘水库江河",
-                commercialBait: ["草鱼专用饵", "螺鲤3号", "野战青草", "发酵玉米饵"],
-                homemadeBait: ["嫩玉米粒", "发酵玉米", "红薯", "嫩草芦苇芯"],
-                habitat: ["中下层及水草区", "水库浅滩草边", "河流洄水湾", "池塘进水口"]
-            },
-            {
-                name: "赤眼鳟",
-                pinyin: "chiyanzun",
-                alias: "红眼鱼、赤眼鲮、野草鱼、红眼棒",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Squaliobarbus_curriculus.jpg/640px-Squaliobarbus_curriculus.jpg",
-                waterType: ["river", "reservoir", "pond"],
-                waterTypeName: "江河干流湖泊",
-                commercialBait: ["腥香综合饵", "螺鲤", "九一八野战", "玉米颗粒"],
-                homemadeBait: ["玉米粒", "麦粒", "蚯蚓", "河虾", "桑椹"],
-                habitat: ["江河缓流区", "湖泊浅水区", "水库进出水口", "水草边缘"]
-            },
-            {
-                name: "鳜鱼",
-                pinyin: "guiyu",
-                alias: "桂鱼、季花鱼、花鲫鱼、鳌花鱼",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Siniperca_chuatsi_Basilewsky.jpg/640px-Siniperca_chuatsi_Basilewsky.jpg",
-                waterType: ["river", "reservoir", "pond"],
-                waterTypeName: "江河湖泊水库",
-                commercialBait: ["铅头钩软饵", "VIB假饵", "沉水米诺", "虾味颗粒"],
-                homemadeBait: ["活泥鳅", "小河虾", "小杂鱼", "蚯蚓"],
-                habitat: ["水底乱石区", "石缝桥墩旁", "水草繁茂区", "深浅交界处", "急流深潭"]
-            },
-            {
-                name: "黑鱼",
-                pinyin: "heiyu",
-                alias: "乌鳢、乌鱼、财鱼、蛇鱼、生鱼、雷鱼",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Channa_argus.jpg/640px-Channa_argus.jpg",
-                waterType: ["pond", "reservoir", "river"],
-                waterTypeName: "池塘湖泊江河",
-                commercialBait: ["雷蛙假饵", "胡须佬", "软虫德州钓组", "浓腥大颗粒"],
-                homemadeBait: ["小青蛙", "泥鳅", "小杂鱼", "大蚯蚓", "动物内脏"],
-                habitat: ["水草丰茂浅水区", "池塘沼泽草丛", "浮萍覆盖区", "河道芦苇丛"]
-            },
-            {
-                name: "黄颡鱼",
-                pinyin: "huangsangyu",
-                alias: "昂刺鱼、黄辣丁、黄骨鱼、嘎鱼、黄鸭叫",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Pelteobagrus_fulvidraco.jpg/640px-Pelteobagrus_fulvidraco.jpg",
-                waterType: ["pond", "reservoir", "river", "stream"],
-                waterTypeName: "广布各水域",
-                commercialBait: ["浓腥蚯蚓粉饵", "红虫颗粒", "虾粉腥香饵", "黄颡专用饵"],
-                homemadeBait: ["大黑蚯蚓", "猪肝鸡肝", "螺蛳肉", "小河虾", "蚕蛹"],
-                habitat: ["水底乱石石缝", "桥墩周围", "水草边缘暗洞", "江河缓流浅滩"]
-            },
-            {
-                name: "黄尾鲴",
-                pinyin: "huangweigou",
-                alias: "黄尾、黄片、黄姑子、板黄鱼、沙姑子",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Xenocypris_davidi.jpg/640px-Xenocypris_davidi.jpg",
-                waterType: ["river", "reservoir"],
-                waterTypeName: "江河水库",
-                commercialBait: ["腥香拉饵", "藻元素", "九一八麸香", "细颗粒饵"],
-                homemadeBait: ["红虫", "蚯蚓", "米饭粒", "玉米面藻粉"],
-                habitat: ["中下层水域", "砂石底浅滩", "水库大坝附近", "河流洄水处"]
-            },
-            {
-                name: "鲫鱼",
-                pinyin: "jiyu",
-                alias: "鲫瓜子、鲋鱼、土鲫、喜头、河鲫",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Carassius_auratus_1.jpg/640px-Carassius_auratus_1.jpg",
-                waterType: ["pond", "reservoir", "river", "stream"],
-                waterTypeName: "广布各水域",
-                commercialBait: ["野战蓝鲫", "九一八野战", "速攻2号", "红虫鲫", "大板鲫"],
-                homemadeBait: ["红虫", "蚯蚓", "酒米打窝", "麦粒", "黄豆粉面团"],
-                habitat: ["近岸浅水区", "水草边芦苇丛", "池塘沟渠", "水库洄水湾"]
-            },
-            {
-                name: "鲤鱼",
-                pinyin: "liyu",
-                alias: "鲤拐子、毛子、红鱼、朝鱼、黄河鲤",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Cyprinus_carpio_2.jpg/640px-Cyprinus_carpio_2.jpg",
-                waterType: ["pond", "reservoir", "river"],
-                waterTypeName: "广布各水域",
-                commercialBait: ["螺鲤2号", "九一八野战", "天下鲤", "超诱基础饵"],
-                homemadeBait: ["老坛发酵玉米", "红薯", "麦粒", "螺蛳肉", "酒糟豆饼"],
-                habitat: ["底层淤泥区", "洄水湾乱石区", "深浅交界处", "进出水口", "草边深坑"]
-            },
-            {
-                name: "鲢鱼",
-                pinyin: "lianyu",
-                alias: "白鲢、鲢子、白胖头、跳鲢、水鲢",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Hypophthalmichthys_molitrix.jpg/640px-Hypophthalmichthys_molitrix.jpg",
-                waterType: ["pond", "reservoir", "river"],
-                waterTypeName: "水库池塘江河",
-                commercialBait: ["鲢鳙酸臭饵", "草莓味鲢鳙饵", "白粉雾化饵", "花篮专用饵"],
-                homemadeBait: ["发酵玉米面", "豆腐渣+醋", "蒜粉麦麸", "酸臭面团"],
-                habitat: ["中上层水域", "开阔大水面", "水库深水区", "肥水池塘"]
-            },
-            {
-                name: "鳙鱼",
-                pinyin: "yongyu",
-                alias: "花鲢、胖头鱼、大头鱼、黑鲢、麻鲢",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Hypophthalmichthys_nobilis.jpg/640px-Hypophthalmichthys_nobilis.jpg",
-                waterType: ["reservoir", "pond", "river"],
-                waterTypeName: "水库湖泊江河",
-                commercialBait: ["鲢鳙酸臭饵", "蒜味鲢鳙饵", "草莓雾化饵", "花篮饵"],
-                homemadeBait: ["发酵豆腐渣", "玉米面红糖发酵", "麦麸蒜粉", "臭饵面团"],
-                habitat: ["大中型水库中上层", "开阔深水区", "河流缓流段", "肥水水域"]
-            },
-            {
-                name: "罗非鱼",
-                pinyin: "luofeiyu",
-                alias: "非洲鲫鱼、福寿鱼、吴郭鱼、南洋鲫",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Oreochromis_niloticus.jpg/640px-Oreochromis_niloticus.jpg",
-                waterType: ["pond", "reservoir", "river"],
-                waterTypeName: "南方暖水水域",
-                commercialBait: ["罗非专用饵", "玉米香饵", "肝味罗非饵", "冻饵套餐"],
-                homemadeBait: ["嫩玉米粒", "蚯蚓", "鸡肝", "麦粒", "虾泥面粉"],
-                habitat: ["南方河湖浅滩", "水库向阳南岸", "池塘缓流区", "水草碎石交界"]
-            },
-            {
-                name: "鲈鱼",
-                pinyin: "luyu",
-                alias: "加州鲈、大口黑鲈、花鲈、鲈子鱼",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Micropterus_salmoides_-_Lake_Murray.jpg/640px-Micropterus_salmoides_-_Lake_Murray.jpg",
-                waterType: ["reservoir", "pond", "river"],
-                waterTypeName: "水库池塘江河",
-                commercialBait: ["铅头钩软虫", "米诺", "波爬", "摇滚小胖", "VIB"],
-                homemadeBait: ["活虾", "小杂鱼", "泥鳅", "蚯蚓"],
-                habitat: ["草边石堆", "桥墩倒树旁", "水库浅滩结构区", "进水口洄水湾"]
-            },
-            {
-                name: "马口鱼",
-                pinyin: "makouyu",
-                alias: "桃花鱼、山鳡、坑爬、大口扒、红车公",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Opsariichthys_bidens.jpg/640px-Opsariichthys_bidens.jpg",
-                waterType: ["stream", "river"],
-                waterTypeName: "山间溪流江河",
-                commercialBait: ["小亮片假饵", "微物米诺", "浓腥拉饵", "水面系拟饵"],
-                homemadeBait: ["红虫", "小蚯蚓", "蝇蛆", "面包虫"],
-                habitat: ["山间溪流浅滩", "清澈流水域", "急缓流交界处", "沙石底浅水区"]
-            },
-            {
-                name: "麦穗鱼",
-                pinyin: "maisuiyu",
-                alias: "罗汉鱼、麻嫩子、砂鱼、小尖嘴、混姑郎",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Pseudorasbora_parva.jpg/640px-Pseudorasbora_parva.jpg",
-                waterType: ["pond", "stream", "river", "reservoir"],
-                waterTypeName: "广布各水域",
-                commercialBait: ["浓腥细颗粒", "红虫粉拉饵", "小号腥香饵"],
-                homemadeBait: ["红虫碎", "蚯蚓碎", "面粉虾粉", "米饭粒"],
-                habitat: ["平缓水草区", "池塘浅水区", "沟渠小河沟", "水库近岸草丛"]
-            },
-            {
-                name: "鲶鱼",
-                pinyin: "nianyu",
-                alias: "土鲶、塘虱、胡子鲶、黏鱼、鲶巴郎",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Silurus_asotus.jpg/640px-Silurus_asotus.jpg",
-                waterType: ["pond", "river", "reservoir", "stream"],
-                waterTypeName: "广布各水域",
-                commercialBait: ["浓腥大颗粒", "鸡肝粉饵", "鲶鱼专用腥饵", "大蚯蚓粉饵"],
-                homemadeBait: ["大蚯蚓", "鸡肝猪肝", "泥鳅", "动物内脏", "蝼蛄蚂蚱"],
-                habitat: ["江河底层深水区", "乱石丛洞穴", "水库深坑", "池塘阴暗处"]
-            },
-            {
-                name: "鳑鲏鱼",
-                pinyin: "pangpiyu",
-                alias: "四方皮、镜鱼、彩圆儿、苦扁鱼、菜板鱼",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Rhodeus_ocellatus.jpg/640px-Rhodeus_ocellatus.jpg",
-                waterType: ["pond", "stream", "river"],
-                waterTypeName: "池塘溪流江河",
-                commercialBait: ["细腻腥香拉饵", "小号鲫鱼饵", "红虫粉饵"],
-                homemadeBait: ["红虫碎", "蚯蚓末", "米饭粒", "面粉团"],
-                habitat: ["浅水水草区", "农村池塘", "小河沟缓流", "水库浅滩草丛"]
-            },
-            {
-                name: "青鱼",
-                pinyin: "qingyu",
-                alias: "黑鲩、青混、螺蛳青、乌青、青根鱼",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Mylopharyngodon_piceus.jpg/640px-Mylopharyngodon_piceus.jpg",
-                waterType: ["reservoir", "river"],
-                waterTypeName: "江河大型水库",
-                commercialBait: ["螺鲤3号", "青鱼颗粒", "大物青草饵", "螺腥基础饵"],
-                homemadeBait: ["螺蛳肉", "蚌肉", "脆螺", "老坛玉米", "红薯"],
-                habitat: ["底层深水区", "水库深潭乱石堆", "螺蛳密集区", "深浅交界处"]
-            },
-            {
-                name: "翘嘴鲌",
-                pinyin: "qiaozuiba",
-                alias: "翘嘴、大白鱼、翘壳、大白刁",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Culter_alburnus.jpg/640px-Culter_alburnus.jpg",
-                waterType: ["reservoir", "river"],
-                waterTypeName: "江河水库湖泊",
-                commercialBait: ["亮片假饵", "沉水米诺", "VIB", "波爬", "腥香玉米颗粒"],
-                homemadeBait: ["活泥鳅", "小河虾", "小杂鱼", "嫩玉米粒"],
-                habitat: ["中上层水域", "大坝入水口", "开阔大水面", "早晚近岸炸水区"]
-            },
-            {
-                name: "沙塘鳢",
-                pinyin: "shatangli",
-                alias: "土布鱼、呆子鱼、虎头鲨、木奶奶",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Odontobutis_obscurus.jpg/640px-Odontobutis_obscurus.jpg",
-                waterType: ["pond", "stream", "river"],
-                waterTypeName: "河沟池塘溪流",
-                commercialBait: ["浓腥拉饵", "红虫粉饵", "小型软饵"],
-                homemadeBait: ["红虫", "蚯蚓", "小虾", "蝇蛆"],
-                habitat: ["河沟浅滩草区", "池塘岸边石缝", "近岸泥沙底", "静水河湾"]
-            },
-            {
-                name: "鲮鱼",
-                pinyin: "lingyu",
-                alias: "土鲮、鲮公、雪鲃、花鲮、泰国鲮",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Cirrhinus_molitorella.jpg/640px-Cirrhinus_molitorella.jpg",
-                waterType: ["river", "reservoir", "pond"],
-                waterTypeName: "华南水系",
-                commercialBait: ["鲮鱼专用饵", "花生腥香饵", "蛋奶香拉饵", "土鲮颗粒"],
-                homemadeBait: ["花生麸", "蚯蚓", "玉米粒", "红薯泥", "米饭团"],
-                habitat: ["珠江流域中下层", "水库浅滩", "池塘缓流区", "水草丰盛处"]
-            },
-            {
-                name: "军鱼",
-                pinyin: "junyu",
-                alias: "光倒刺鲃、青棍、黄娟鱼、砖鱼、坚鱼",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Spinibarbus_hollandi.jpg/640px-Spinibarbus_hollandi.jpg",
-                waterType: ["stream", "river"],
-                waterTypeName: "山溪河流上游",
-                commercialBait: ["亮片假饵", "米诺", "腥香颗粒饵", "玉米饵"],
-                homemadeBait: ["活虾", "蚯蚓", "蚂蚱", "玉米粒", "昆虫"],
-                habitat: ["山间溪流急流", "清澈石底河段", "水库深潭", "瀑布下方深水区"]
-            },
-            {
-                name: "溪石斑",
-                pinyin: "xishiban",
-                alias: "光唇鱼、石斑鱼、罗丝鱼、淡水石斑",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Acrossocheilus_fasciatus.jpg/640px-Acrossocheilus_fasciatus.jpg",
-                waterType: ["stream"],
-                waterTypeName: "山间溪流",
-                commercialBait: ["微物腥香拉饵", "红虫粉饵", "小颗粒腥饵"],
-                homemadeBait: ["红虫", "蚯蚓", "蝇蛆", "面包虫", "米饭粒"],
-                habitat: ["山间清澈溪流", "石砾底浅滩", "水流湍急处", "石缝石洞旁"]
-            },
-            {
-                name: "柳根鱼",
-                pinyin: "liugenyu",
-                alias: "柳根子、拉氏鱥、土鱼、柳鱼",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Rhynchocypris_lagowskii.jpg/640px-Rhynchocypris_lagowskii.jpg",
-                waterType: ["stream", "river"],
-                waterTypeName: "北方冷水溪流",
-                commercialBait: ["浓腥拉饵", "红虫粉饵", "小号鲫鱼饵"],
-                homemadeBait: ["红虫", "蚯蚓", "蝇蛆", "玉米面团"],
-                habitat: ["山间小溪河流", "低温冷水域", "砂石底浅滩", "柳树根须下"]
-            },
-            {
-                name: "船丁鱼",
-                pinyin: "chuandingyu",
-                alias: "蛇鮈、船钉子、白杨鱼、打船钉、沙锥子",
-                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Saurogobio_dabryi.jpg/640px-Saurogobio_dabryi.jpg",
-                waterType: ["river", "reservoir"],
-                waterTypeName: "江河水库",
-                commercialBait: ["浓腥细拉饵", "红虫粉饵", "蚯蚓粉商品饵"],
-                homemadeBait: ["红虫", "蚯蚓", "蝇蛆", "米饭粒"],
-                habitat: ["江河浅滩沙底", "水流平缓处", "水库近岸", "河道转弯处"]
+        (function() {
+            // ---------- 图片路径配置 ----------
+            const IMG_BASE = 'images/';
+            const IMG_EXT = '.webp';
+            function getFishImageUrl(fish) {
+                if (fish.imageUrl && fish.imageUrl.trim()) return fish.imageUrl;
+                return IMG_BASE + fish.pinyin.replace(/\s+/g, '') + IMG_EXT;
             }
-        ];
+            const PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%23f0ece6'/%3E%3Ctext x='40' y='45' font-size='14' text-anchor='middle' fill='%23b0aaa2'%3E🐟%3C/text%3E%3C/svg%3E";
 
-        // 首字母列表
-        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-        let currentFilter = 'all';
-        let currentKeyword = '';
+            // ---------- 全局详细描述库 ----------
+            const baitInstructions = {
+                '蚯蚓': '选择鲜活的红蚯蚓，整条挂钩，钩尖从头部穿入露出少许，保持蠕动诱鱼。适用于鲫鱼、鲤鱼、黄颡鱼等。',
+                '红虫': '用细钩条穿2-3条红虫，尾部露出，可绑束使用。冬季冰钓或早春效果极佳。',
+                '面团': '面粉加水和少量香油揉至耳垂软硬，搓成小团挂钩。可加曲酒或蜂蜜提味。',
+                '米饭粒': '选熟透的米饭粒，一粒挂钩，轻坠慢提。传统钓鲫鱼利器。',
+                '麦粒': '干麦粒煮至刚开裂，加糖或麝香密封发酵。挂钩时穿透表皮，露出胚芽。',
+                '玉米粒': '嫩玉米可直接挂钩；老玉米需煮熟或发酵，可加酒、蜂蜜浸泡。草鱼、鲤鱼最爱。',
+                '蓝鲫': '单开即可，饵水比1:0.9，静置5分钟揉成团。可加少量拉丝粉增强附钩性。',
+                '九一八': '按包装说明开饵，可搭配速攻2#调整状态。广谱性强，适合野钓。',
+                '螺鲤': '与颗粒料混合使用，泡开螺肉腥香。适用于水库钓大型鲤鱼、青鱼。',
+                '速攻腥味': '与蓝鲫或九一八混合，增加雾化与腥味。适合夏季或流水环境。',
+            };
 
-        // 图片加载失败降级
-        function handleImageError(img) {
-            const fallback = document.createElement('div');
-            fallback.className = 'fish-image-fallback';
-            fallback.textContent = '🐟';
-            img.parentNode.replaceChild(fallback, img);
-        }
+            const habitatDescriptions = {
+                '水草边': '水草边缘外30-100厘米，溶氧高、食物丰富，鲫鱼、鳊鱼常在此觅食。水深通常0.8-2米。',
+                '石缝处': '水域中石块缝隙、陡峭岩壁下方，水深1-4米。鳜鱼、鲶鱼、鳜鱼伏击猎物，宜用荤饵。',
+                '水库表层': '水面至下约50厘米，水温较高，适合清晨和傍晚钓白条、翘嘴。多用浮钓或拟饵。',
+                '水库中层': '水深1-3米的水层，是鳊鱼、草鱼巡游通道。可根据水温调整钓深。',
+                '深水区': '水深超过4米的区域，水库坝前、河道深潭。青鱼、鲤鱼在夏季常潜于此。',
+                '桥墩下': '桥墩迎水面缓流区，水深2-5米。黄颡鱼、鲶鱼藏身，夜钓效果好。',
+                '进水口附近': '活水带入溶氧和食物，距离出水口5-20米。鳊鱼、翘嘴活跃，宜用活饵。',
+                '洄水湾': '河道转弯内侧缓流区，泥沙底，水深1-3米。鲫鱼、鲤鱼聚集，适合底钓。',
+                '溪流浅滩': '水深20-60厘米，沙石底，溶氧极高。马口鱼、柳根鱼群游，宜用小型亮片或飞蝇。',
+                '芦苇荡': '密集挺水植物区，水深0.5-1.5米。黑鱼、黄鳝藏身，需防挂钩，宜用雷蛙或软虫。',
+                '池塘泥底': '淤泥较厚，底质松软，水深1-2米。泥鳅、鲫鱼在此翻找食物，适合钓底。',
+                '荷藕叶下': '荷叶空隙间，水深0.5-1.5米。黑鱼、鳑鲏藏身，轻逗慢提效果佳。',
+            };
 
-        // 初始化
-        function init() {
-            renderAlphabetNav();
-            renderFishCards(fishData);
-            initBackTop();
-        }
-
-        // 渲染字母导航
-        function renderAlphabetNav() {
-            const nav = document.getElementById("alphabetNav");
-            const existingLetters = new Set(fishData.map(f => f.pinyin[0].toUpperCase()));
-            let html = "";
-            alphabet.forEach(letter => {
-                if (existingLetters.has(letter)) {
-                    html += `<a href="#section-${letter}" onclick="scrollToSection('${letter}')">${letter}</a>`;
-                } else {
-                    html += `<a class="empty">${letter}</a>`;
-                }
-            });
-            nav.innerHTML = html;
-        }
-
-        function scrollToSection(letter) {
-            const section = document.getElementById(`section-${letter}`);
-            if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-
-        // 按水域筛选
-        function filterByWater(type) {
-            currentFilter = type;
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.dataset.filter === type) tab.classList.add('active');
-            });
-            applyFilters();
-        }
-
-        // 搜索
-        function searchFish() {
-            currentKeyword = document.getElementById("searchInput").value.trim().toLowerCase();
-            applyFilters();
-        }
-
-        // 应用筛选
-        function applyFilters() {
-            let filtered = fishData;
-            if (currentFilter !== 'all') {
-                filtered = filtered.filter(fish => fish.waterType.includes(currentFilter));
+            function getBaitDetail(baitName) {
+                return baitInstructions[baitName] || `关于"${baitName}"的详细制作方法，建议根据当地水域和季节调整饵料状态。`;
             }
-            if (currentKeyword) {
-                filtered = filtered.filter(fish => {
-                    return fish.name.toLowerCase().includes(currentKeyword) ||
-                           fish.alias.toLowerCase().includes(currentKeyword) ||
-                           fish.commercialBait.some(b => b.toLowerCase().includes(currentKeyword)) ||
-                           fish.homemadeBait.some(b => b.toLowerCase().includes(currentKeyword)) ||
-                           fish.habitat.some(h => h.toLowerCase().includes(currentKeyword));
-                });
+            function getHabitatDetail(habitatName) {
+                return habitatDescriptions[habitatName] || `关于"${habitatName}"的具体垂钓说明：请结合当地水域特点，分析水深、水流、底质及植被覆盖，选择合适钓点。`;
             }
-            renderFishCards(filtered);
-        }
 
-        // 渲染卡片
-        function renderFishCards(data) {
-            const container = document.getElementById("fishContainer");
-            const noResult = document.getElementById("noResult");
-            const resultCount = document.getElementById("resultCount");
-            
-            resultCount.textContent = `共 ${data.length} 种鱼类`;
-            if (data.length === 0) {
-                container.innerHTML = "";
-                noResult.classList.add("show");
-                return;
-            }
-            noResult.classList.remove("show");
+            // ---------- 鱼种数据 (45种) ----------
+            const fishData = [
+                { name:'白条', pinyin:'baitiao', commonNames:['餐条','白漂子'], commercialBait:['蓝鲫','腥味饵'], homemadeBait:['苍蝇','小虫','饭粒','面包屑'], habitats:['水库表层','溪流浅滩','江河岸边缓流处'], waterTypes:['水库','溪流','江河'] },
+                { name:'鳊鱼', pinyin:'bianyu', commonNames:['武昌鱼','团头鲂'], commercialBait:['菜籽饼饵','九一八麸香'], homemadeBait:['玉米粒','麦粒','嫩菜叶'], habitats:['水库中层','水草边','洄水湾'], waterTypes:['水库','江河','湖泊'] },
+                { name:'草鱼', pinyin:'caoyu', commonNames:['草根','鲩鱼'], commercialBait:['巨无霸','草鱼王'], homemadeBait:['嫩草叶','玉米粒','芦苇芯'], habitats:['水草边','进水口附近','水库中上层'], waterTypes:['水库','江河','湖泊'] },
+                { name:'鳡鱼', pinyin:'ganyu', commonNames:['水老虎','黄钻'], commercialBait:['大型亮片','米诺'], homemadeBait:['活鱼','泥鳅'], habitats:['江河急流处','水库深水区'], waterTypes:['江河','水库'] },
+                { name:'鳜鱼', pinyin:'guiyu', commonNames:['桂鱼','鳌花'], commercialBait:['软饵','亮片'], homemadeBait:['活泥鳅','小活鱼'], habitats:['石缝处','桥墩下','水库岩壁'], waterTypes:['江河','水库','溪流'] },
+                { name:'黑鱼', pinyin:'heiyu', commonNames:['乌鱼','财鱼'], commercialBait:['雷蛙','软虫'], homemadeBait:['活泥鳅','小青蛙'], habitats:['芦苇荡','荷叶下','水草丛中'], waterTypes:['池塘','湖泊'] },
+                { name:'黄颡鱼', pinyin:'huangsangyu', commonNames:['黄辣丁','嘎牙子'], commercialBait:['腥味颗粒','红虫颗粒'], homemadeBait:['蚯蚓','鸡肝'], habitats:['石缝处','桥墩下','水草边'], waterTypes:['江河','水库','溪流'] },
+                { name:'黄鳝', pinyin:'huangshan', commonNames:['鳝鱼','长鱼'], commercialBait:['腥味小颗粒'], homemadeBait:['大蚯蚓','猪肝'], habitats:['田埂洞穴','池塘泥岸','水草丛根部'], waterTypes:['池塘','沟渠稻田'] },
+                { name:'鲫鱼', pinyin:'jiyu', commonNames:['鲫瓜子','板鲫'], commercialBait:['蓝鲫','九一八','速攻'], homemadeBait:['蚯蚓','红虫','米饭粒','面团','麦粒'], habitats:['水草边','洄水湾','桥墩下','水库浅滩','乡村池塘'], waterTypes:['池塘','水库','江河','湖泊'] },
+                { name:'甲鱼', pinyin:'jiayu', commonNames:['鳖','团鱼'], commercialBait:['腥味颗粒','肝味饵'], homemadeBait:['猪肝','鸡肠','蚯蚓'], habitats:['沙泥底浅滩','水库岸边','河湾沙滩'], waterTypes:['水库','江河','湖泊','池塘'] },
+                { name:'鲤鱼', pinyin:'liyu', commonNames:['鲤拐子','红鱼'], commercialBait:['螺鲤','天下鲤'], homemadeBait:['玉米粒','红薯','麦粒'], habitats:['深水区','水库坝头','淤泥底水域'], waterTypes:['水库','江河','湖泊','池塘'] },
+                { name:'鲢鱼', pinyin:'lianyu', commonNames:['白鲢','跳鲢'], commercialBait:['酸酵鲢','浮钓鲢鳙'], homemadeBait:['发酵豆渣','酸面团'], habitats:['水库中上层','开阔水面','进水口附近'], waterTypes:['水库','江河','湖泊'] },
+                { name:'鲈鱼', pinyin:'luyu', commonNames:['花鲈','大口鲈'], commercialBait:['软虫','米诺'], homemadeBait:['活虾','小活鱼','泥鳅'], habitats:['水库岩壁','桥墩处','水草丛边缘'], waterTypes:['水库','江河','湖泊'] },
+                { name:'罗非鱼', pinyin:'luofeiyu', commonNames:['非洲鲫鱼','福寿鱼'], commercialBait:['罗非饵','肝味饵'], homemadeBait:['蚯蚓','面团','虾肉'], habitats:['水草边','浅滩','水库向阳浅水区'], waterTypes:['池塘','水库','湖泊'] },
+                { name:'马口鱼', pinyin:'makouyu', commonNames:['桃花鱼','溪哥'], commercialBait:['亮片','小软虫'], homemadeBait:['蚯蚓','小虫'], habitats:['溪流浅滩','山涧潭水','卵石滩'], waterTypes:['溪流','江河'] },
+                { name:'泥鳅', pinyin:'niqiu', commonNames:['泥里钻','胡鳅'], commercialBait:['腥味小颗粒'], homemadeBait:['蚯蚓','红虫','小虫'], habitats:['淤泥底','水田沟渠','池塘泥底'], waterTypes:['沟渠稻田','池塘'] },
+                { name:'鲶鱼', pinyin:'nianyu', commonNames:['胡子鲶','塘鲺'], commercialBait:['腥味颗粒','鸡肝饵'], homemadeBait:['鸡肝','大蚯蚓','泥鳅'], habitats:['石缝处','桥墩下','深水区'], waterTypes:['江河','水库','深潭'] },
+                { name:'翘嘴', pinyin:'qiaozui', commonNames:['翘嘴鲌','白鱼'], commercialBait:['亮片','米诺'], homemadeBait:['小活鱼','河虾','泥鳅'], habitats:['水库开阔水面','江河洄水处','大坝附近'], waterTypes:['水库','江河','湖泊'] },
+                { name:'青鱼', pinyin:'qingyu', commonNames:['螺蛳青','青棒'], commercialBait:['螺鲤','青鱼王'], homemadeBait:['螺蛳肉','蚌肉','玉米粒'], habitats:['深水区','水库坝底','石缝处'], waterTypes:['水库','江河','深潭'] },
+                { name:'鳙鱼', pinyin:'yongyu', commonNames:['花鲢','胖头鱼'], commercialBait:['酸酵鳙','鲢鳙饵'], homemadeBait:['发酵豆渣','臭豆腐'], habitats:['水库中上层','开阔水面','进水口附近'], waterTypes:['水库','江河','湖泊'] },
+                // 剩余简化，保持结构
+                { name:'鳑鲏', pinyin:'pangpi', commonNames:['四方皮','彩石鲋'], commercialBait:['腥味小饵','蓝鲫'], homemadeBait:['蚯蚓段','红虫','饭粒'], habitats:['溪流水草边','池塘浅滩'], waterTypes:['溪流','池塘'] },
+                { name:'麦穗鱼', pinyin:'maisuiyu', commonNames:['罗汉鱼','小杂鱼'], commercialBait:['腥味小颗粒'], homemadeBait:['蚯蚓碎段','红虫'], habitats:['池塘浅水','沟渠缓流'], waterTypes:['池塘','沟渠稻田'] },
+                { name:'沙塘鳢', pinyin:'shatangli', commonNames:['虎头鲨','呆子鱼'], commercialBait:['腥味软饵'], homemadeBait:['蚯蚓','小虾'], habitats:['池塘石缝','溪流石砾底'], waterTypes:['池塘','溪流'] },
+                { name:'太阳鱼', pinyin:'taiyangyu', commonNames:['蓝鳃鱼','美国鲫'], commercialBait:['小亮片','软虫'], homemadeBait:['蚯蚓','红虫'], habitats:['水库浅滩','湖泊岸边'], waterTypes:['水库','池塘'] },
+                { name:'赤眼鳟', pinyin:'chiyanzun', commonNames:['红眼鱼','马娘鱼'], commercialBait:['亮片','蓝鲫'], homemadeBait:['蚯蚓','小虫','玉米粒'], habitats:['江河急流处','溪流汇流口'], waterTypes:['江河','溪流'] },
+                { name:'丁桂鱼', pinyin:'dingguiyu', commonNames:['丁鱥','欧洲鲫'], commercialBait:['腥味饵'], homemadeBait:['蚯蚓','红虫','面团'], habitats:['水库底层','湖泊泥底'], waterTypes:['水库','湖泊'] },
+                { name:'红尾鱼', pinyin:'hongweiyu', commonNames:['红尾鲴','红梢'], commercialBait:['亮片','米诺'], homemadeBait:['蚯蚓','小活鱼'], habitats:['江河中层','水库大坝附近'], waterTypes:['江河','水库'] },
+                { name:'黄尾鲴', pinyin:'huangweigu', commonNames:['黄尾','黄鲴鱼'], commercialBait:['腥味颗粒','蓝鲫'], homemadeBait:['蚯蚓','红虫','麦粒'], habitats:['水库中层','江河沙底'], waterTypes:['水库','江河'] },
+                { name:'花骨鱼', pinyin:'huaguyu', commonNames:['花鯝','麻鲤'], commercialBait:['腥味颗粒'], homemadeBait:['蚯蚓','红虫','螺蛳肉'], habitats:['江河沙石底','溪流急流处'], waterTypes:['江河','溪流'] },
+                { name:'军鱼', pinyin:'junyu', commonNames:['倒刺鲃','青棍'], commercialBait:['亮片','米诺'], homemadeBait:['蚯蚓','小活鱼'], habitats:['溪流清潭','水库岩壁下'], waterTypes:['溪流','水库'] },
+                { name:'鲮鱼', pinyin:'lingyu', commonNames:['土鲮','泰鲮'], commercialBait:['鲮鱼饵','麦麸饵'], homemadeBait:['麦粒','玉米粒'], habitats:['江河底层','缓流沙底'], waterTypes:['江河','水库'] },
+                { name:'狗鱼', pinyin:'gouyu', commonNames:['黑龙江狗鱼','鸭鱼'], commercialBait:['大型亮片','波趴'], homemadeBait:['活鱼','泥鳅'], habitats:['江河缓流处','湖泊水草区'], waterTypes:['江河','湖泊'] },
+                { name:'哲罗鲑', pinyin:'zheluogui', commonNames:['大红鱼','虎鱼'], commercialBait:['大型亮片','铁板'], homemadeBait:['活鱼','泥鳅'], habitats:['山溪深潭','冷水江河'], waterTypes:['溪流','江河'] },
+                { name:'细鳞鲑', pinyin:'xilingui', commonNames:['细鳞鱼','山细鳞'], commercialBait:['小亮片','软虫'], homemadeBait:['蚯蚓','溪虫'], habitats:['山溪清流','冷水江河'], waterTypes:['溪流','江河'] },
+                { name:'船钉子', pinyin:'chuandingzi', commonNames:['蛇鮈','钉鱼'], commercialBait:['腥味小颗粒'], homemadeBait:['蚯蚓','红虫'], habitats:['江河沙底','溪流浅滩'], waterTypes:['江河','溪流'] },
+                { name:'重唇鱼', pinyin:'chongchunyu', commonNames:['唇䱻','麻鱼'], commercialBait:['腥味颗粒'], homemadeBait:['蚯蚓','螺蛳肉'], habitats:['江河石底','溪流清潭'], waterTypes:['江河','溪流'] },
+                { name:'雅罗鱼', pinyin:'yaluoyu', commonNames:['华子鱼','白鱼'], commercialBait:['亮片','小软虫'], homemadeBait:['蚯蚓','小虫'], habitats:['江河中上层','溪流汇流口'], waterTypes:['江河','溪流'] },
+                { name:'柳根鱼', pinyin:'liugenyu', commonNames:['柳根','拉氏鱥'], commercialBait:['腥味小颗粒'], homemadeBait:['蚯蚓','红虫'], habitats:['山溪冷水区','溪流柳树根下'], waterTypes:['溪流','江河'] },
+                { name:'银鱼', pinyin:'yinyu', commonNames:['面条鱼','玻璃鱼'], commercialBait:['腥味微粒饵'], homemadeBait:['红虫','小虾'], habitats:['湖泊开阔水域','水库中上层'], waterTypes:['湖泊','水库'] },
+                { name:'鲟鱼', pinyin:'xunyu', commonNames:['中华鲟','鳇鱼'], commercialBait:['腥味大颗粒','底窝料'], homemadeBait:['螺蛳肉','蚌肉'], habitats:['江河深水区','水库坝底深潭'], waterTypes:['江河','水库'] },
+                { name:'鲻鱼', pinyin:'ziyu', commonNames:['乌头','白眼'], commercialBait:['腥味颗粒','麸皮饵'], homemadeBait:['蚯蚓','面团'], habitats:['江河入海口','湖泊咸淡水区'], waterTypes:['江河','湖泊'] },
+                { name:'梭鱼', pinyin:'suoyu', commonNames:['梭子鱼','赤眼梭'], commercialBait:['腥味颗粒','小软虫'], homemadeBait:['蚯蚓','沙蚕'], habitats:['江河入海口','水库浅湾'], waterTypes:['江河','水库'] },
+                { name:'淡水白鲳', pinyin:'danshuibaichang', commonNames:['白鲳','银鲳'], commercialBait:['腥味饵','蓝鲫'], homemadeBait:['蚯蚓','火腿肠丁','玉米粒'], habitats:['水库中层','湖泊缓流区'], waterTypes:['水库','湖泊'] },
+                { name:'鲴鱼', pinyin:'guyu', commonNames:['黄鲴','银鲴'], commercialBait:['腥味颗粒','蓝鲫'], homemadeBait:['蚯蚓','红虫','麦粒'], habitats:['江河沙石底','水库浅滩'], waterTypes:['江河','水库'] },
+                { name:'棒花鱼', pinyin:'banghuayu', commonNames:['爬虎鱼','沙锤'], commercialBait:['腥味微粒饵'], homemadeBait:['蚯蚓碎段','红虫'], habitats:['溪流沙底','江河浅滩'], waterTypes:['溪流','江河'] },
+                { name:'鳗鱼', pinyin:'manyu', commonNames:['河鳗','白鳝'], commercialBait:['腥味大颗粒','鸡肝饵'], homemadeBait:['大蚯蚓','鸡肝'], habitats:['江河石缝','水库坝底洞穴'], waterTypes:['江河','水库'] }
+            ];
+            fishData.sort((a,b)=>a.pinyin.localeCompare(b.pinyin,'zh-CN'));
 
-            const grouped = {};
-            data.forEach(fish => {
-                const first = fish.pinyin[0].toUpperCase();
-                if (!grouped[first]) grouped[first] = [];
-                grouped[first].push(fish);
+            // ---------- 水域分组等 ----------
+            const waterTypeOrder = ['江河','湖泊','水库','溪流','池塘','沟渠稻田','深潭'];
+            const waterTypeMeta = { '江河':{icon:'🌊'}, '湖泊':{icon:'🏞️'}, '水库':{icon:'🏗️'}, '溪流':{icon:'🏔️'}, '池塘':{icon:'🪷'}, '沟渠稻田':{icon:'🌾'}, '深潭':{icon:'🕳️'} };
+            const groupedByAlpha = {};
+            fishData.forEach(f=>{ const l=f.pinyin.charAt(0).toUpperCase(); if(!groupedByAlpha[l]) groupedByAlpha[l]=[]; groupedByAlpha[l].push(f); });
+            const sortedAlphaLetters = Object.keys(groupedByAlpha).sort();
+            const fullAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            const alphaHasData = {}; fullAlphabet.forEach(l=>alphaHasData[l]=!!groupedByAlpha[l]);
+            const groupedByWater = {};
+            waterTypeOrder.forEach(wt=>groupedByWater[wt]=[]);
+            fishData.forEach(f=>{ f.waterTypes.forEach(wt=>{ if(groupedByWater[wt]) groupedByWater[wt].push(f); }); });
+            Object.values(groupedByWater).forEach(arr=>{
+                const seen=new Set();
+                arr=arr.filter(f=>{if(seen.has(f.name))return false;seen.add(f.name);return true;});
+                arr.sort((a,b)=>a.pinyin.localeCompare(b.pinyin,'zh-CN'));
             });
 
-            const sortedLetters = Object.keys(grouped).sort();
-            let html = "";
-            sortedLetters.forEach(letter => {
-                html += `<div id="section-${letter}">`;
-                html += `<h2 class="section-title">${letter}</h2>`;
-                html += `<div class="fish-grid">`;
-                grouped[letter].sort((a,b)=>a.pinyin.localeCompare(b.pinyin)).forEach(fish => {
-                    html += `
-                    <div class="fish-card">
-                        <img class="fish-image" src="${fish.image}" alt="${fish.name}" loading="lazy" onerror="handleImageError(this)">
-                        <div class="fish-body">
-                            <h3>${fish.name}</h3>
-                            <div class="alias"><strong>俗名：</strong>${fish.alias}</div>
-                            <span class="water-type">${fish.waterTypeName}</span>
-                            <div class="info-block">
-                                <div class="info-label">商品饵</div>
-                                <div class="info-content"><ul>${fish.commercialBait.map(b=>`<li>${b}</li>`).join("")}</ul></div>
-                            </div>
-                            <div class="info-block">
-                                <div class="info-label">自制饵</div>
-                                <div class="info-content"><ul>${fish.homemadeBait.map(b=>`<li>${b}</li>`).join("")}</ul></div>
-                            </div>
-                            <div class="info-block">
-                                <div class="info-label">栖息区域</div>
-                                <div class="info-content"><ul>${fish.habitat.map(h=>`<li>${h}</li>`).join("")}</ul></div>
-                            </div>
+            const mainContent=document.getElementById('mainContent'), subNavScroll=document.getElementById('subNavScroll');
+            const popularRow=document.getElementById('popularRow');
+            const modalOverlay=document.getElementById('modalOverlay'), modalTitle=document.getElementById('modalTitle'), modalBody=document.getElementById('modalBody');
+            const backToTop=document.getElementById('backToTop'), viewToggleRow=document.getElementById('viewToggleRow');
+            let currentView='alpha', currentSearch='';
+
+            function highlightText(text,kw){if(!kw.trim())return text;const e=kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return text.replace(new RegExp(`(${e})`,'gi'),'<mark>$1</mark>');}
+
+            function renderFishCard(fish,kw){
+                const imgSrc=getFishImageUrl(fish);
+                return `<div class="fish-card" id="fish-${fish.pinyin}" data-fish="${fish.name}">
+                    <div class="card-top">
+                        <img class="fish-img" src="${imgSrc}" alt="${fish.name}" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER}';">
+                        <div class="card-info">
+                            <div class="fish-name-row"><span class="fish-name">${highlightText(fish.name,kw)}</span><span class="fish-pinyin">${fish.pinyin}</span></div>
+                            <div class="info-row"><span class="info-label">俗名</span><span class="info-tags">${fish.commonNames.map(c=>highlightText(c,kw)).join('、')}</span></div>
+                            <div class="info-row"><span class="info-label">商品饵</span><span class="info-tags">${fish.commercialBait.map(b=>`<span class="tag tag-comm">${highlightText(b,kw)}</span>`).join('')}</span></div>
+                            <div class="info-row"><span class="info-label">自制饵</span><span class="info-tags">${fish.homemadeBait.map(b=>`<span class="tag tag-home" data-bait="${b}">${highlightText(b,kw)}</span>`).join('')}</span></div>
+                            <div class="info-row"><span class="info-label">区域</span><span class="info-tags">${fish.habitats.map(h=>`<span class="tag tag-hab" data-habitat="${h}">${highlightText(h,kw)}</span>`).join('')}</span></div>
+                            <div class="info-row"><span class="info-label">水域</span><span class="info-tags">${fish.waterTypes.map(w=>`<span class="tag tag-water">${highlightText(w,kw)}</span>`).join('')}</span></div>
                         </div>
-                    </div>`;
+                    </div>
+                </div>`;
+            }
+
+            function renderSubNav(){
+                let html='';
+                if(currentView==='alpha') fullAlphabet.forEach(l=>html+=`<a href="#section-alpha-${l}" class="${alphaHasData[l]?'':'empty'}">${l}</a>`);
+                else waterTypeOrder.forEach(wt=>{ const f=groupedByWater[wt]; if(f&&f.length) html+=`<a href="#section-water-${wt}" data-water="${wt}">${waterTypeMeta[wt]?.icon||'💧'} ${wt}<span style="font-size:0.65rem;opacity:0.7;margin-left:2px;">${f.length}</span></a>`; });
+                subNavScroll.innerHTML=html;
+                subNavScroll.querySelectorAll('a:not(.empty)').forEach(a=>a.addEventListener('click',function(e){e.preventDefault();const t=document.getElementById(this.getAttribute('href').substring(1));if(t)window.scrollTo({top:t.offsetTop-150,behavior:'smooth'});}));
+            }
+
+            function renderPopularRow(){
+                const popularNames=['鲫鱼','鲤鱼','草鱼','鳊鱼','黄颡鱼','鳜鱼','翘嘴','鲢鱼','鳙鱼','黑鱼','罗非鱼','青鱼'];
+                let html='<span style="font-size:0.75rem;color:var(--text-muted);flex-shrink:0;align-self:center;">🔥热门：</span>';
+                popularNames.forEach(name=>{
+                    const fish=fishData.find(f=>f.name===name);
+                    if(fish) html+=`<button class="popular-btn" data-scroll="fish-${fish.pinyin}">${name}</button>`;
                 });
-                html += `</div></div>`;
-            });
-            container.innerHTML = html;
-        }
+                popularRow.innerHTML=html;
+                popularRow.querySelectorAll('.popular-btn').forEach(btn=>{
+                    btn.addEventListener('click',()=>{
+                        const target=document.getElementById(btn.dataset.scroll);
+                        if(target) window.scrollTo({top:target.offsetTop-150,behavior:'smooth'});
+                    });
+                });
+            }
 
-        // 回到顶部
-        function initBackTop() {
-            const btn = document.getElementById('backTop');
-            window.addEventListener('scroll', () => {
-                btn.classList.toggle('show', window.scrollY > 300);
-            });
-        }
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+            function renderContent(kw=''){
+                const keyword=kw.trim();
+                let html='',total=0;
+                if(!keyword){
+                    if(currentView==='alpha'){
+                        sortedAlphaLetters.forEach(l=>{
+                            html+=`<div class="section-title" id="section-alpha-${l}">${l}</div><div class="fish-grid">`;
+                            groupedByAlpha[l].forEach(f=>{html+=renderFishCard(f,'');total++;});
+                            html+='</div>';
+                        });
+                    }else{
+                        waterTypeOrder.forEach(wt=>{
+                            const fishes=groupedByWater[wt]||[];
+                            if(!fishes.length)return;
+                            html+=`<div class="section-title" id="section-water-${wt}"><span>${waterTypeMeta[wt]?.icon||'💧'}</span>${wt}<span style="font-size:0.7rem;color:var(--text-muted);margin-left:6px;">(${fishes.length}种)</span></div><div class="fish-grid">`;
+                            fishes.forEach(f=>{html+=renderFishCard(f,'');total++;});
+                            html+='</div>';
+                        });
+                    }
+                }else{
+                    const matched=fishData.filter(f=>(f.name+' '+f.commonNames.join(' ')+' '+f.waterTypes.join(' ')+' '+f.habitats.join(' ')).toLowerCase().includes(keyword.toLowerCase()));
+                    if(!matched.length){mainContent.innerHTML='';document.getElementById('noResult').style.display='block';return;}
+                    document.getElementById('noResult').style.display='none';
+                    matched.sort((a,b)=>a.pinyin.localeCompare(b.pinyin,'zh-CN'));
+                    html+='<div class="fish-grid">';
+                    matched.forEach(f=>{html+=renderFishCard(f,keyword);total++;});
+                    html+='</div>';
+                }
+                mainContent.innerHTML=html;
+                document.getElementById('resultCount').innerHTML=`共 <strong>${total}</strong> 种`;
+                // 绑定弹窗事件
+                bindModalEvents();
+            }
 
-        document.addEventListener("DOMContentLoaded", init);
+            function bindModalEvents(){
+                document.querySelectorAll('.tag-home').forEach(tag=>{
+                    tag.addEventListener('click',function(e){
+                        const bait=this.dataset.bait;
+                        modalTitle.textContent=`🍞 自制饵：${bait}`;
+                        modalBody.textContent=getBaitDetail(bait);
+                        modalOverlay.classList.add('active');
+                    });
+                });
+                document.querySelectorAll('.tag-hab').forEach(tag=>{
+                    tag.addEventListener('click',function(e){
+                        const hab=this.dataset.habitat;
+                        modalTitle.textContent=`📍 区域：${hab}`;
+                        modalBody.textContent=getHabitatDetail(hab);
+                        modalOverlay.classList.add('active');
+                    });
+                });
+            }
+
+            // 弹窗关闭
+            document.getElementById('modalClose').addEventListener('click',()=>modalOverlay.classList.remove('active'));
+            modalOverlay.addEventListener('click',function(e){if(e.target===modalOverlay) modalOverlay.classList.remove('active');});
+
+            // 视图切换
+            viewToggleRow.addEventListener('click',e=>{
+                const btn=e.target.closest('.toggle-btn');
+                if(!btn)return;
+                const v=btn.dataset.view;
+                if(v===currentView)return;
+                currentView=v;
+                viewToggleRow.querySelectorAll('.toggle-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
+                renderSubNav();
+                renderContent(currentSearch);
+                window.scrollTo({top:0,behavior:'smooth'});
+            });
+
+            let debounce;
+            document.getElementById('searchInput').addEventListener('input',function(){
+                document.getElementById('searchClear').classList.toggle('visible',!!this.value.trim());
+                clearTimeout(debounce);
+                debounce=setTimeout(()=>{currentSearch=this.value;renderContent(this.value);},180);
+            });
+            document.getElementById('searchClear').addEventListener('click',()=>{
+                const inp=document.getElementById('searchInput');
+                inp.value=''; inp.dispatchEvent(new Event('input')); inp.focus();
+            });
+
+            window.addEventListener('scroll',()=>{
+                backToTop.classList.toggle('visible',window.scrollY>500);
+            });
+            backToTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+            // 初始化
+            renderSubNav();
+            renderPopularRow();
+            renderContent('');
+        })();
     </script>
 </body>
 </html>
